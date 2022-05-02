@@ -11,9 +11,12 @@ def on_packet(data: MetaData):
 
 
 def start():
+    input("Connect your device and press Enter")
+
     meter = USBMeter(KnownDevice.A2)
     meter.recv_callback(on_packet)
     meter.connect()
+
     print("Press Enter to stop reading")
     time.sleep(3)
 
