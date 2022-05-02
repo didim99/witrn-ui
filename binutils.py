@@ -1,3 +1,6 @@
+# Original code by Daniel Brodie, modified by didim99
+# See: https://code.activestate.com/recipes/576666/
+
 import struct
 
 
