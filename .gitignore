@@ -1,0 +1,14 @@
+# Editor
+.idea/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Enwironment
+venv/
+
+# In/out dirs
+/out/
+/src/
