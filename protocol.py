@@ -16,6 +16,10 @@ class DeviceInfo:
         self.idProduct = pid
         self.endpoint = ep
 
+    def __repr__(self):
+        return "{} [{:04x}:{:04x}]".format(
+            self.devName, self.idVendor, self.idProduct)
+
 
 class KnownDevice(Enum):
     A2 = DeviceInfo(name='A2', vid=0x0716, pid=0x5045, ep=0x81)

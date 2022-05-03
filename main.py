@@ -37,12 +37,22 @@ class Main:
                     data.voltage, data.current, data.dp, data.dn))
         sys.stdout.flush()
 
+    def on_error(self, error: Exception) -> None:
+        print("\nError: " + str(error))
+        self.running = False
+        exit()
+
     def start(self) -> None:
         input("Connect your device and press Enter")
 
-        meter = USBMeter(KnownDevice.A2)
-        meter.recv_callback(self.on_packet)
-        meter.connect()
+        try:
+            meter = USBMeter(KnownDevice.A2)
+            meter.recv_callback(self.on_packet)
+            meter.error_callback(self.on_error)
+            meter.connect()
+        except Exception as e:
+            print("Failed to connect: " + str(e))
+            return
 
         print("Press Enter to stop reading\n")
         time.sleep(1)

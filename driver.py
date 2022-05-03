@@ -13,6 +13,7 @@ class USBMeter:
     _running: Event
     _recv_thread: Thread
     _recv_cb: Callable
+    _error_cb: Callable
 
     def __init__(self, _info: KnownDevice):
         self._info = _info.value
@@ -21,26 +22,32 @@ class USBMeter:
     def recv_callback(self, callback: Callable):
         self._recv_cb = callback
 
+    def error_callback(self, callback: Callable):
+        self._error_cb = callback
+
     def connect(self):
         self._device = usb.core.find(idVendor=self._info.idVendor,
                                      idProduct=self._info.idProduct)
+        if self._device is None:
+            raise IOError(f"Device {self._info} not found!")
+
         if self._device.is_kernel_driver_active(0):
             try:
                 self._device.detach_kernel_driver(0)
-                print("kernel driver detached")
+                print("Kernel driver detached")
             except USBError as e:
-                exit("Could not detach kernel driver: %s" % str(e))
+                raise IOError("Could not detach kernel driver") from e
         else:
-            print("no kernel driver attached")
+            print("No kernel driver attached")
         try:
             usb.util.claim_interface(self._device, 0)
-            print("claimed device")
+            print("Claimed device")
         except USBError as e:
-            exit("Could not claim the device: %s" % str(e))
+            raise IOError("Could not claim the device") from e
         try:
             self._device.reset()
         except usb.core.USBError as e:
-            exit("Could not set configuration: %s" % str(e))
+            raise IOError("Could not set configuration") from e
 
     def start_read(self):
         self._running.set()
@@ -53,10 +60,16 @@ class USBMeter:
 
     def _reader_loop(self):
         while self._running.is_set():
-            data = self._device.read(self._info.endpoint, 64)
-            if not data:
-                continue
+            try:
+                data = self._device.read(self._info.endpoint, 64)
+                if not data:
+                    continue
 
-            data = HIDPacket(data)
-            if self._recv_cb is not None:
-                self._recv_cb(data)
+                data = HIDPacket(data)
+                if self._recv_cb is not None:
+                    self._recv_cb(data)
+            except USBError as e:
+                self._running.clear()
+                if self._error_cb is not None:
+                    self._error_cb(e)
+                break
