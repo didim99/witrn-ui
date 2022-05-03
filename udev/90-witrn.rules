@@ -1,0 +1,8 @@
+# WITRN U3
+ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5044", MODE="0666"
+
+# WITRN A2
+ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5045", MODE="0666"
+
+# WITRN A2L
+ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5050", MODE="0666"

@@ -22,9 +22,9 @@ class DeviceInfo:
 
 
 class KnownDevice(Enum):
+    U3 = DeviceInfo(name='U3', vid=0x0716, pid=0x5044, ep=0x81)
     A2 = DeviceInfo(name='A2', vid=0x0716, pid=0x5045, ep=0x81)
     A2L = DeviceInfo(name='A2L', vid=0x0716, pid=0x5050, ep=0x81)
-    U3 = DeviceInfo(name='U3', vid=0x0716, pid=0x5044, ep=0x81)
 
 
 class Command:
