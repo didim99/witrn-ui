@@ -1,5 +1,7 @@
+from array import array
 from enum import Enum
-from binutils import *
+from typing import List
+from binutils import Binary, BinaryType, Byte, Word, Dword, Float
 
 
 class DeviceInfo:
@@ -25,7 +27,7 @@ class Command:
     DAT_RECV = 0x1a     # Data packet received
 
 
-class MetaData(metaclass=Binary):
+class _MetaData(metaclass=Binary):
     size = 52           # Offset     Size         Description
     offPer = Byte       # 0x00 (0)   1  (int8)    Unknown data
     offHour = Byte      # 0x01 (1)   1  (int8)    Unknown data
@@ -44,15 +46,15 @@ class MetaData(metaclass=Binary):
     reserved = Byte[7]  # 0x3d (45)  7  (???)     Reserved bytes, unknown data
 
 
-class Payload(metaclass=Binary):
+class _Payload(metaclass=Binary):
     size = 55           # Offset     Size         Description
     command = Byte      # 0x00 (0)   1  (int8)    Command number
-    length = Byte       # 0x01 (1)   1  (int8)    Data length (always zero?)
+    length = Byte       # 0x01 (1)   1  (int8)    Data structure length
     data = Byte[52]     # 0x02 (2)   52 (struct)  MetaData structure
     verify = Byte       # 0x02 (54)  1  (int8)    Checksum byte
 
 
-class Packet(metaclass=Binary):
+class _Packet(metaclass=Binary):
     size = 64           # Offset     Size         Description
     start = Byte        # 0x00 (0)   1  (int8)    Packet start byte
     head = Byte         # 0x01 (1)   1  (int8)    Packet header byte
@@ -64,8 +66,80 @@ class Packet(metaclass=Binary):
     verify = Byte       # 0x3f (63)  1  (int8)    Checksum byte
 
 
-def parse_packet(data) -> MetaData:
-    _, packet = Packet.from_binary(data)
-    _, payload = Payload.from_binary(bytes(packet['payload']))
-    _, data = MetaData.from_binary(bytes(payload['data']))
-    return data
+class BaseStruct(object):
+    _proto: BinaryType
+    _rawValue: array
+
+    def __init__(self, data: array):
+        _, parsed = self._proto.from_binary(data)
+        self._rawValue = data
+        self._fill(parsed)
+
+    def _fill(self, dictionary: dict):
+        for k, v in dictionary.items():
+            setattr(self, k, v)
+
+
+class MetaData(BaseStruct):
+    _proto = _MetaData
+
+    offPer: int
+    offHour: int
+    recmA: int
+    ah: float
+    wh: float
+    recTime: int
+    runTime: int
+    dp: float
+    dn: float
+    tempIn: float
+    tempOut: float
+    voltage: float
+    current: float
+    recGrp: float
+    reserved: List[int]
+
+
+class HIDPayload(BaseStruct):
+    _proto = _Payload
+
+    command: int
+    length: int
+    data: MetaData
+    verify: int
+
+    def _fill(self, data: dict):
+        super()._fill(data)
+        if self.command == Command.DAT_RECV:
+            self.data = MetaData(array('B', data['data']))
+
+    def __repr__(self):
+        return "command=0x%02x" % self.command \
+               + " length=0x%02x" % self.length \
+               + " verify=0x%02x" % self.verify
+
+
+class HIDPacket(BaseStruct):
+    _proto = _Packet
+    _rawPayload: array
+
+    start: int
+    head: int
+    idx1: int
+    idx2: int
+    needAck: int
+    free: List[int]
+    payload: HIDPayload
+    verify: int
+
+    def _fill(self, data: dict):
+        super()._fill(data)
+        self.payload = HIDPayload(array('B', data['payload']))
+
+    def __repr__(self):
+        return "start=0x%02x" % self.start \
+               + " head=0x%02x" % self.head \
+               + " idx1=0x%02x" % self.idx1 \
+               + " idx2=0x%02x" % self.idx2 \
+               + " needAck=0x%02x" % self.needAck \
+               + " verify=0x%02x" % self.verify

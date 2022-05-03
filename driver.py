@@ -2,13 +2,13 @@ from threading import Thread, Event
 from typing import Callable
 import usb.core
 import usb.util
-from usb.core import Device, USBError
-from protocol import *
+from usb.core import USBError, Device as USBDevice
+from protocol import DeviceInfo, KnownDevice, HIDPacket
 
 
 class USBMeter:
     _info: DeviceInfo
-    _device: Device
+    _device: USBDevice
 
     _running: Event
     _recv_thread: Thread
@@ -57,6 +57,6 @@ class USBMeter:
             if not data:
                 continue
 
-            data = parse_packet(data)
+            data = HIDPacket(data)
             if self._recv_cb is not None:
                 self._recv_cb(data)

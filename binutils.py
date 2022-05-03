@@ -44,7 +44,7 @@ class SimpleBinaryType(BinaryType):
 
     def from_binary(self, binary):
         return (self._struct.size,
-                self._struct.unpack_from(binary[:self._struct.size])[0])
+                self._struct.unpack(binary[:self._struct.size])[0])
 
 
 @preargs
@@ -109,7 +109,7 @@ class BinaryBuilder(dict):
 
 class Binary(type):
     @classmethod
-    def __prepare__(*bases, **kwargs):
+    def __prepare__(mcs, cls, bases, **kwargs):
         # In the future kwargs can contain things such as endianity
         # and alignment
         return BinaryBuilder(**kwargs)
