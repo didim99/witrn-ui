@@ -31,14 +31,18 @@ class USBMeter:
         if self._device is None:
             raise IOError(f"Device {self._info} not found!")
 
-        if self._device.is_kernel_driver_active(0):
-            try:
-                self._device.detach_kernel_driver(0)
-                print("Kernel driver detached")
-            except USBError as e:
-                raise IOError("Could not detach kernel driver") from e
-        else:
-            print("No kernel driver attached")
+        try:
+            if self._device.is_kernel_driver_active(0):
+                try:
+                    self._device.detach_kernel_driver(0)
+                    print("Kernel driver detached")
+                except USBError as e:
+                    raise IOError("Could not detach kernel driver") from e
+            else:
+                print("No kernel driver attached")
+        except NotImplementedError as e:
+            print(f"Not implemented: '{e}', proceeding")
+
         try:
             usb.util.claim_interface(self._device, 0)
             print("Claimed device")

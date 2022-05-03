@@ -5,11 +5,13 @@ for reading data from modern WITRN USB-meters such
 as U3, A2 and A2L. Is there no any *UI* yet,
 but it is possible in the future.
 
+---
+
 Sample output:
 ```
 Connect your device and press Enter
-no kernel driver attached
-claimed device
+No kernel driver attached
+Claimed device
 Press Enter to stop reading
 
  packets |      rectime |       uptime |      V      A |     D+     D-
@@ -17,3 +19,9 @@ Press Enter to stop reading
 
 Good bye!
 ```
+
+---
+
+**Note!** For Windows users, if you see message `Device not found!` when device is
+actually connected, try use [zadig](https://github.com/pbatard/libwdi/releases)
+utility and replace the default driver for your WITRN device to `libusb-*`.

@@ -51,7 +51,7 @@ class Main:
             meter.error_callback(self.on_error)
             meter.connect()
         except Exception as e:
-            print("Failed to connect: " + str(e))
+            print("Failed to connect: " + type(e).__name__ + ": " + str(e))
             return
 
         print("Press Enter to stop reading\n")
