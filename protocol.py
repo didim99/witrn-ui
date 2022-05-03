@@ -21,43 +21,47 @@ class KnownDevice(Enum):
     U3 = DeviceInfo(name='U3', vid=0x0716, pid=0x5044, ep=0x81)
 
 
+class Command:
+    DAT_RECV = 0x1a     # Data packet received
+
+
 class MetaData(metaclass=Binary):
-    size = 52           # total size
-    offPer = Byte       # offset:0x00 (0)  size:1  (int8)
-    offHour = Byte      # offset:0x01 (1)  size:1  (int8)
-    recmA = Word        # offset:0x02 (2)  size:2  (uint16)
-    ah = Float          # offset:0x04 (4)  size:4  (float)
-    wh = Float          # offset:0x08 (8)  size:4  (float)
-    recTime = Dword     # offset:0x0c (12) size:4  (uint32)
-    runTime = Dword     # offset:0x10 (16) size:4  (uint32)
-    dp = Float          # offset:0x14 (20) size:4  (float)
-    dn = Float          # offset:0x18 (24) size:4  (float)
-    tempIn = Float      # offset:0x1c (28) size:4  (float)
-    tempOut = Float     # offset:0x20 (32) size:4  (float)
-    voltage = Float     # offset:0x24 (36) size:4  (float)
-    current = Float     # offset:0x28 (40) size:4  (float)
-    recGrp = Byte       # offset:0x2c (44) size:1  (int8)
-    reserved = Byte[7]  # offset:0x3d (45) size:7  (unknown)
+    size = 52           # Offset     Size         Description
+    offPer = Byte       # 0x00 (0)   1  (int8)    Unknown data
+    offHour = Byte      # 0x01 (1)   1  (int8)    Unknown data
+    recmA = Word        # 0x02 (2)   2  (uint16)  Minimal recorded current
+    ah = Float          # 0x04 (4)   4  (float)   Accumulated capacity (Ah)
+    wh = Float          # 0x08 (8)   4  (float)   Accumulated energy (Wh)
+    recTime = Dword     # 0x0c (12)  4  (uint32)  Time since record start (sec)
+    runTime = Dword     # 0x10 (16)  4  (uint32)  Time since boot (sec)
+    dp = Float          # 0x14 (20)  4  (float)   USB D+ voltage (V)
+    dn = Float          # 0x18 (24)  4  (float)   USB D- voltage (V)
+    tempIn = Float      # 0x1c (28)  4  (float)   Inner temperature (degC)
+    tempOut = Float     # 0x20 (32)  4  (float)   External temperature (degC)
+    voltage = Float     # 0x24 (36)  4  (float)   USB V_BUS voltage (V)
+    current = Float     # 0x28 (40)  4  (float)   USB V_BUS current (A)
+    recGrp = Byte       # 0x2c (44)  1  (int8)    Current recording group num
+    reserved = Byte[7]  # 0x3d (45)  7  (???)     Reserved bytes, unknown data
 
 
 class Payload(metaclass=Binary):
-    size = 55           # total size
-    command = Byte      # offset:0x00 (0)  size:1  (int8)
-    length = Byte       # offset:0x01 (1)  size:1  (int8)
-    data = Byte[52]     # offset:0x02 (2)  size:52 (MetaData)
-    verify = Byte       # offset:0x02 (54) size:1  (int8)
+    size = 55           # Offset     Size         Description
+    command = Byte      # 0x00 (0)   1  (int8)    Command number
+    length = Byte       # 0x01 (1)   1  (int8)    Data length (always zero?)
+    data = Byte[52]     # 0x02 (2)   52 (struct)  MetaData structure
+    verify = Byte       # 0x02 (54)  1  (int8)    Checksum byte
 
 
 class Packet(metaclass=Binary):
-    size = 64           # total size
-    start = Byte        # offset:0x00 (0)  size:1  (int8)
-    head = Byte         # offset:0x01 (1)  size:1  (int8)
-    idx1 = Byte         # offset:0x02 (2)  size:1  (int8)
-    idx2 = Byte         # offset:0x03 (3)  size:1  (int8)
-    needAck = Byte      # offset:0x04 (4)  size:1  (int8)
-    free = Byte[3]      # offset:0x05 (5)  size:3  (unknown)
-    payload = Byte[55]  # offset:0x08 (8)  size:55 (Payload)
-    verify = Byte       # offset:0x00 (0)  size:1  (int8)
+    size = 64           # Offset     Size         Description
+    start = Byte        # 0x00 (0)   1  (int8)    Packet start byte
+    head = Byte         # 0x01 (1)   1  (int8)    Packet header byte
+    idx1 = Byte         # 0x02 (2)   1  (int8)    Unknown data
+    idx2 = Byte         # 0x03 (3)   1  (int8)    Unknown data
+    needAck = Byte      # 0x04 (4)   1  (int8)    ACK request flag
+    free = Byte[3]      # 0x05 (5)   3  (???)     Unknown data
+    payload = Byte[55]  # 0x08 (8)   55 (struct)  Payload structure
+    verify = Byte       # 0x3f (63)  1  (int8)    Checksum byte
 
 
 def parse_packet(data) -> MetaData:
