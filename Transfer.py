@@ -1,7 +1,7 @@
 import time
 from datetime import timedelta
 from driver import USBMeter
-from protocol import KnownDevice, HIDPacket, Command
+from driver.protocol import KnownDevice, HIDPacket, Command
 from PyQt5.QtCore import QThread, pyqtSignal
 
 
