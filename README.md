@@ -1,9 +1,11 @@
 # WITRN UI
 
 This simple utility demonstrates Proof of Concept
-for reading data from modern WITRN USB-meters such
-as U3, A2 and A2L. Is there no any *UI* yet,
-but it is possible in the future.
+for reading data from modern WITRN USB-meters such as
+U3, U3L, A2, and C4 (tested). A2L and C4L can also be
+supported theoretically but I don't have hardware for
+testing. Is there no any *UI* yet, but it is possible
+in the future.
 
 ---
 

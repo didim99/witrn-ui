@@ -1,0 +1,24 @@
+# WITRN U2p
+ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5030", MODE="0666"
+# WITRN U3
+ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5044", MODE="0666"
+# WITRN U3L
+ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5054", MODE="0666"
+# WITRN A2
+ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5045", MODE="0666"
+# WITRN A2L
+ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5050", MODE="0666"
+# WITRN C4
+ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5053", MODE="0666"
+
+# FNIRSI FNB-48
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="003a", MODE="0666"
+# FNIRSI FNB-C1
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="003b", MODE="0666"
+# FNIRSI FNB-58
+ATTRS{idVendor}=="2e3c", ATTRS{idProduct}=="5558", MODE="0666"
+
+# AVHzY C-3
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="fffe", MODE="0666"
+# AVHzY CT-3
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="ffff", MODE="0666"
