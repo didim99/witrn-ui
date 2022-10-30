@@ -3,7 +3,7 @@ from typing import Callable
 import usb.core
 import usb.util
 from usb.core import USBError, Device as USBDevice
-from protocol import DeviceInfo, KnownDevice, HIDPacket
+from driver.protocol import DeviceInfo, KnownDevice, HIDPacket
 
 
 class USBMeter:
