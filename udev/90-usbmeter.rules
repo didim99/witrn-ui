@@ -1,3 +1,5 @@
+# Allows non-root access to various USB-meters
+
 # WITRN U2p
 ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5030", MODE="0666"
 # WITRN U3
@@ -11,11 +13,11 @@ ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5050", MODE="0666"
 # WITRN C4
 ATTRS{idVendor}=="0716", ATTRS{idProduct}=="5053", MODE="0666"
 
-# FNIRSI FNB-48
+# FNIRSI FNB48
 ATTRS{idVendor}=="0483", ATTRS{idProduct}=="003a", MODE="0666"
-# FNIRSI FNB-C1
+# FNIRSI C1
 ATTRS{idVendor}=="0483", ATTRS{idProduct}=="003b", MODE="0666"
-# FNIRSI FNB-58
+# FNIRSI FNB58
 ATTRS{idVendor}=="2e3c", ATTRS{idProduct}=="5558", MODE="0666"
 
 # AVHzY C-3
