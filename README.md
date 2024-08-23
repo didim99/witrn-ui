@@ -27,3 +27,10 @@ Good bye!
 **Note!** For Windows users, if you see message `Device not found!` when device is
 actually connected, try use [zadig](https://github.com/pbatard/libwdi/releases)
 utility and replace the default driver for your WITRN device to `libusb-*`.
+
+**Note!** For Linux users, to run this script under non-root user install udev rules:
+
+```shell
+$ sudo install --mode=0644 --target-directory=/etc/udev/rules.d/ udev/90-usbmeter.rules
+$ sudo udevadm trigger
+```
